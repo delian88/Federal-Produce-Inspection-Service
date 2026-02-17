@@ -1,43 +1,54 @@
 
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { MOCK_TRANSACTIONS, COLORS } from '../constants';
+import { COLORS } from '../constants';
 import { summarizeRevenueData } from '../services/geminiService';
 import CountUp from './CountUp';
-
-const data = [
-  { name: 'Jan', revenue: 4000, inspections: 240 },
-  { name: 'Feb', revenue: 3000, inspections: 198 },
-  { name: 'Mar', revenue: 2000, inspections: 150 },
-  { name: 'Apr', revenue: 2780, inspections: 210 },
-  { name: 'May', revenue: 1890, inspections: 180 },
-  { name: 'Jun', revenue: 2390, inspections: 250 },
-  { name: 'Jul', revenue: 3490, inspections: 310 },
-];
+import { postgres } from '../db/postgres';
+import { RevenueTransaction } from '../types';
 
 const Dashboard: React.FC = () => {
   const [aiSummary, setAiSummary] = useState<string>('Analyzing revenue trends...');
   const [isLoading, setIsLoading] = useState(true);
+  const [dbData, setDbData] = useState<{ transactions: RevenueTransaction[], inspections: any[] }>({ transactions: [], inspections: [] });
 
   useEffect(() => {
-    const fetchSummary = async () => {
+    const fetchData = async () => {
       try {
-        const summary = await summarizeRevenueData(MOCK_TRANSACTIONS);
-        setAiSummary(summary || 'Analysis complete.');
+        const txns = await postgres.queryAll('transactions');
+        const insps = await postgres.queryAll('inspections');
+        setDbData({ transactions: txns, inspections: insps });
+
+        if (txns.length > 0) {
+          const summary = await summarizeRevenueData(txns);
+          setAiSummary(summary || 'Operational analysis complete.');
+        } else {
+          setAiSummary('Waiting for production logs to populate.');
+        }
       } catch (err) {
         setAiSummary('AI Analysis temporarily unavailable.');
       } finally {
         setIsLoading(false);
       }
     };
-    fetchSummary();
+    fetchData();
   }, []);
 
+  const totalRevenue = dbData.transactions.reduce((acc, t) => acc + (t.status === 'PAID' ? t.amount : 0), 0);
+  const certifiedCount = dbData.inspections.filter(i => i.status === 'CERTIFIED').length;
+  const pendingCount = dbData.inspections.filter(i => i.status === 'SUBMITTED' || i.status === 'IN_PROGRESS').length;
+
+  const chartData = [
+    { name: 'Mar', revenue: 2000, inspections: 150 },
+    { name: 'Apr', revenue: 2780, inspections: 210 },
+    { name: 'May', revenue: totalRevenue / 100, inspections: dbData.inspections.length },
+  ];
+
   const stats = [
-    { label: 'Total Revenue', value: 1.2, prefix: '₦', suffix: 'B', change: '+12.5%', color: 'text-emerald-600' },
-    { label: 'Verified Certificates', value: 3842, change: '+8.1%', color: 'text-blue-600' },
-    { label: 'Pending Inspections', value: 142, change: '-5.2%', color: 'text-amber-600' },
-    { label: 'Market Compliance', value: 98.4, suffix: '%', decimals: 1, change: '+2.1%', color: 'text-indigo-600' },
+    { label: 'Total Revenue', value: totalRevenue / 1000, prefix: '₦', suffix: 'k', change: '+12.5%', color: 'text-emerald-600' },
+    { label: 'Certifications', value: certifiedCount, change: '+8.1%', color: 'text-blue-600' },
+    { label: 'Pending Tasks', value: pendingCount, change: '-5.2%', color: 'text-amber-600' },
+    { label: 'Compliance', value: 98.4, suffix: '%', decimals: 1, change: '+2.1%', color: 'text-indigo-600' },
   ];
 
   return (
@@ -47,7 +58,7 @@ const Dashboard: React.FC = () => {
         <div className="relative z-10 max-w-2xl">
           <h2 className="text-3xl font-black mb-2 text-white">Operational Overview</h2>
           <p className="text-emerald-100 leading-relaxed font-medium">
-            Welcome to the Federal Produce Inspection Service central portal. Current peak season for <span className="underline decoration-amber-400 font-bold">Cocoa and Cashew</span> is active in Western and Northern zones. Ensure all digital receipts are synced before terminal close.
+            Welcome to the Federal Produce Inspection Service central portal. Current production node is synced with <span className="underline decoration-amber-400 font-bold">PostgreSQL Simulation v4</span>. All digital certifications are now tied to unique revenue IDs.
           </p>
         </div>
         <div className="absolute top-0 right-0 p-12 opacity-10">
@@ -85,7 +96,7 @@ const Dashboard: React.FC = () => {
         <div className="flex-1 text-center md:text-left">
           <h4 className="font-black text-slate-900 text-lg">AI Revenue Strategy Assistant</h4>
           <p className="text-slate-600 mt-1 leading-relaxed font-medium">
-            {isLoading ? 'Processing latest inspection data...' : aiSummary}
+            {isLoading ? 'Querying PostgreSQL migration records...' : aiSummary}
           </p>
         </div>
         <button className="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm whitespace-nowrap hover:bg-slate-800 transition-all">Detailed Analysis</button>
@@ -97,7 +108,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-xl font-black text-slate-900 mb-8 tracking-tight">Revenue Trajectory</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />
@@ -115,7 +126,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-xl font-black text-slate-900 mb-8 tracking-tight">Inspection Volume</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />

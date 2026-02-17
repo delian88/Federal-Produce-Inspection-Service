@@ -13,7 +13,7 @@ export interface Migration {
 
 class PostgresSim {
   private dbName = 'fpis_postgres';
-  private version = 3;
+  private version = 4;
   private db: IDBDatabase | null = null;
 
   private migrations: Migration[] = [
@@ -39,6 +39,15 @@ class PostgresSim {
       description: 'Create agent receipts table',
       up: (db) => {
         db.createObjectStore('receipts', { keyPath: 'id' });
+      }
+    },
+    {
+      version: 4,
+      description: 'Seed initial production data',
+      up: (db) => {
+        // Seeding will be handled in a separate service to ensure data integrity 
+        // across both IndexedDB and Neo4j-sim logic, but we ensure stores are ready.
+        console.info('[DB] Migration v4: Stores prepared for seeding.');
       }
     }
   ];
