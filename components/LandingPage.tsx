@@ -235,7 +235,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
             {/* Project Compliance Footer in Gateway */}
             <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
               <div className="flex items-center gap-6">
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Coat_of_arms_of_Nigeria.svg" className="h-16 md:h-20" alt="Nigeria Arms" />
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Coat_of_arms_of_Nigeria.svg" className="h-16 md:h-20 object-contain" alt="Nigeria Arms" />
                  <div className="text-left">
                    <p className="font-black text-slate-900 text-sm">FMITI FEDERAL REPUBLIC OF NIGERIA</p>
                    <p className="text-xs font-bold text-slate-500">Ministry of Industry, Trade and Investment</p>
