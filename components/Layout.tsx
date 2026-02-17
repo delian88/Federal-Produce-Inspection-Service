@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ICONS, COLORS } from '../constants';
-import { UserRole } from '../types';
+import { UserRole, Notification } from '../types';
+import { postgres } from '../db/postgres';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,28 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, userRole, userName, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const allNotifs: Notification[] = await postgres.queryAll('notifications');
+      const filtered = allNotifs.filter(n => n.recipientRole === userRole);
+      setNotifications(filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+    };
+    fetchNotifications();
+  }, [userRole, isNotifOpen]);
+
+  const markAllAsRead = async () => {
+    for (const ntf of notifications) {
+      if (!ntf.isRead) {
+        await postgres.insert('notifications', { ...ntf, isRead: true });
+      }
+    }
+    setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+  };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const getAllowedItems = () => {
     const items = [
@@ -104,7 +127,58 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
               <p className="text-[8px] md:text-[10px] text-emerald-600 font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mt-0.5">{userRole} Session</p>
             </div>
           </div>
+          
           <div className="flex items-center gap-4 md:gap-8">
+             {/* Notification Bell */}
+             <div className="relative">
+               <button 
+                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                className="p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-400 relative"
+               >
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                 {unreadCount > 0 && (
+                   <span className="absolute top-2.5 right-2.5 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>
+                 )}
+               </button>
+
+               {/* Notification Panel */}
+               {isNotifOpen && (
+                 <div className="absolute right-0 mt-4 w-80 md:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl z-[60] overflow-hidden animate-in slide-in-from-top-4 duration-300">
+                    <div className="p-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                      <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest">Alerts</h4>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllAsRead} className="text-[10px] font-black text-emerald-600 hover:text-emerald-700 uppercase tracking-wider">Mark all read</button>
+                      )}
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto divide-y divide-slate-50">
+                      {notifications.length === 0 ? (
+                        <div className="p-10 text-center text-slate-400 font-medium text-sm">No notifications found</div>
+                      ) : (
+                        notifications.map((n) => (
+                          <div key={n.id} className={`p-6 transition-colors ${n.isRead ? 'opacity-60' : 'bg-emerald-50/20'}`}>
+                            <div className="flex items-start gap-4">
+                              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                                n.type === 'WARNING' ? 'bg-amber-500' :
+                                n.type === 'ERROR' ? 'bg-rose-500' :
+                                n.type === 'SUCCESS' ? 'bg-emerald-500' : 'bg-blue-500'
+                              }`}></div>
+                              <div className="flex-1">
+                                <p className="font-bold text-slate-900 text-sm">{n.title}</p>
+                                <p className="text-slate-500 text-xs mt-1 leading-relaxed">{n.message}</p>
+                                <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase">{new Date(n.timestamp).toLocaleTimeString()}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
+                       <button onClick={() => setIsNotifOpen(false)} className="text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest">Dismiss Panel</button>
+                    </div>
+                 </div>
+               )}
+             </div>
+
              <div className="hidden lg:block text-right">
                <p className="text-sm font-black text-slate-900 tracking-tight">{userName || 'Loading...'}</p>
                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">FPIS Official</p>

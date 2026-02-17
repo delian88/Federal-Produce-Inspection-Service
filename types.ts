@@ -45,3 +45,15 @@ export interface InspectionRecord {
   status: InspectionStatus;
   dateCreated: string;
 }
+
+export type NotificationType = 'INFO' | 'WARNING' | 'SUCCESS' | 'ERROR';
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
+  timestamp: string;
+  recipientRole: UserRole;
+}

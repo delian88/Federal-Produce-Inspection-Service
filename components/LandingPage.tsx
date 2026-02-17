@@ -103,13 +103,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
       <section className="bg-white py-12 md:py-24 px-4 md:px-6 relative z-10">
         <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12 text-center">
           {[
-            { label: 'Revenue Growth', val: 45, prefix: '+', suffix: '%', desc: 'Postgres Linked' },
+            { label: 'Revenue Growth', val: 45, prefix: '+', suffix: '%', desc: 'Real-time Tracking' },
             { label: 'Leakage Reduced', val: 99, suffix: '%', desc: 'Secure Ledger' },
-            { label: 'Neo Nodes', val: 120, suffix: '+', desc: 'Supply Chain Graph' },
-            { label: 'Active Sessions', val: 12, suffix: 'k', desc: 'Distributed Auth' }
+            { label: 'Network Terminals', val: 120, suffix: '+', desc: 'Supply Chain Graph' },
+            { label: 'Active Records', val: 12, suffix: 'k', desc: 'Validated Daily' }
           ].map((s, i) => (
             <div key={i} className="group p-4 md:p-8 rounded-2xl md:rounded-3xl hover:bg-emerald-50/50 transition-all">
-              <p className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-2 md:mb-4 group-hover:text-emerald-600 transition-colors tracking-tighter"><CountUp end={s.val} prefix={s.prefix} suffix={s.suffix} /></p>
+              <p className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-2 md:mb-4 group-hover:text-emerald-600 transition-colors tracking-tighter">
+                <CountUp end={s.val} prefix={s.prefix} suffix={s.suffix} />
+              </p>
               <p className="text-[10px] md:text-sm font-black text-slate-900 uppercase tracking-widest mb-1">{s.label}</p>
               <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{s.desc}</p>
             </div>
@@ -136,53 +138,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
         </div>
       </section>
 
-      {/* Partnership Section */}
-      <section className="py-20 md:py-32 px-4 md:px-12 bg-slate-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-full md:w-1/2 h-full bg-emerald-600/5 blur-[80px] md:blur-[120px] rounded-full"></div>
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-          <div className="lg:w-1/2 space-y-10">
-            <div className="inline-flex px-4 py-1.5 bg-emerald-600/10 border border-emerald-600/20 rounded-full text-emerald-400 text-[10px] font-black uppercase tracking-widest">The PPP Advantage</div>
-            <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tighter">
-              Five Stars ICT & <br/>
-              <span className="shining-text-hero">FMITI Strategic Alliance</span>
-            </h2>
-            <p className="text-slate-400 text-lg leading-relaxed font-medium">
-              A comprehensive Design-Finance-Build-Operate-Transfer (DFBOT) model ensuring that the Federal Produce Inspection Service leverages world-class technology with zero financial risk to the ministry.
-            </p>
-            <div className="grid sm:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <h5 className="font-black text-emerald-400 text-sm uppercase tracking-widest">Shared Risk</h5>
-                <p className="text-slate-500 text-sm">Aligning interests towards achieving peak revenue and service delivery goals.</p>
-              </div>
-              <div className="space-y-3">
-                <h5 className="font-black text-emerald-400 text-sm uppercase tracking-widest">Innovation</h5>
-                <p className="text-slate-500 text-sm">Introducing cutting-edge ICT solutions and digital record-keeping best practices.</p>
-              </div>
-            </div>
-          </div>
-          <div className="lg:w-1/2 relative">
-             <div className="absolute -inset-10 bg-emerald-500/10 blur-[100px] rounded-full"></div>
-             <div className="bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-[48px] shadow-2xl relative">
-                <h3 className="text-2xl font-black mb-6">Project Scope</h3>
-                <ul className="space-y-6">
-                  <li className="flex gap-4 items-start">
-                    <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 mt-1"><svg className="text-white w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path d="M5 13l4 4L19 7"/></svg></div>
-                    <span className="text-slate-300 font-medium italic">Integrated Revenue Management System (RMS)</span>
-                  </li>
-                  <li className="flex gap-4 items-start">
-                    <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 mt-1"><svg className="text-white w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path d="M5 13l4 4L19 7"/></svg></div>
-                    <span className="text-slate-300 font-medium italic">Comprehensive Staff Training & Capacity Building</span>
-                  </li>
-                  <li className="flex gap-4 items-start">
-                    <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 mt-1"><svg className="text-white w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path d="M5 13l4 4L19 7"/></svg></div>
-                    <span className="text-slate-300 font-medium italic">Continuous System Reliability & Performance Support</span>
-                  </li>
-                </ul>
-             </div>
-          </div>
-        </div>
-      </section>
-
       {/* Full-Page Login Portal */}
       {showLogin && (
         <div className="fixed inset-0 bg-white z-[200] flex flex-col transition-all duration-700 overflow-y-auto animate-in fade-in duration-500">
@@ -204,7 +159,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
             </button>
           </div>
 
-          <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pb-20">
+          <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pb-20 flex-1 flex flex-col justify-center">
             {isLoggingIn ? (
               <div className="flex flex-col items-center justify-center py-40 space-y-8">
                 <div className="w-20 h-20 border-8 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -233,19 +188,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
             )}
             
             {/* Project Compliance Footer in Gateway */}
-            <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+            <div className="mt-auto pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 py-10">
               <div className="flex items-center gap-6">
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Coat_of_arms_of_Nigeria.svg" className="h-16 md:h-20 object-contain" alt="Nigeria Arms" />
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Coat_of_arms_of_Nigeria.svg/1200px-Coat_of_arms_of_Nigeria.svg.png" className="h-20 md:h-28 object-contain transition-transform hover:scale-110 duration-700" alt="Nigeria Arms" />
                  <div className="text-left">
-                   <p className="font-black text-slate-900 text-sm">FMITI FEDERAL REPUBLIC OF NIGERIA</p>
-                   <p className="text-xs font-bold text-slate-500">Ministry of Industry, Trade and Investment</p>
+                   <p className="font-black text-slate-900 text-base md:text-lg tracking-tighter">FMITI FEDERAL REPUBLIC OF NIGERIA</p>
+                   <p className="text-xs md:text-sm font-bold text-slate-500">Ministry of Industry, Trade and Investment</p>
                  </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center font-black text-emerald-700">5S</div>
+              <div className="flex items-center gap-4 border-l border-slate-200 pl-8">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-100 rounded-2xl flex items-center justify-center font-black text-emerald-700 text-xl md:text-2xl">5S</div>
                 <div className="text-left">
-                  <p className="font-black text-slate-900 text-sm">FIVE STARS ICT LTD</p>
-                  <p className="text-xs font-bold text-slate-500">Official Infrastructure Partner</p>
+                  <p className="font-black text-slate-900 text-base">FIVE STARS ICT LTD</p>
+                  <p className="text-xs md:text-sm font-bold text-slate-500">Infrastructure Partner Node 01</p>
                 </div>
               </div>
             </div>

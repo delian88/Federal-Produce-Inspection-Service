@@ -1,6 +1,6 @@
 
 import { postgres } from '../db/postgres';
-import { UserRole, PaymentStatus, InspectionStatus } from '../types';
+import { UserRole, PaymentStatus, InspectionStatus, Notification } from '../types';
 
 export interface UserSession {
   token: string;
@@ -55,7 +55,19 @@ export const seedDemoUsers = async () => {
     await postgres.insert('inspections', ins);
   }
 
-  console.info('[Auth] Production data seeded into PostgreSQL simulation successfully.');
+  // 4. Seed Role-Specific Notifications
+  const notifications: Notification[] = [
+    { id: 'NTF-001', title: 'New Inspection Task', message: 'You have been assigned a new Cocoa Beans inspection at Apapa Port.', type: 'INFO', isRead: false, timestamp: new Date().toISOString(), recipientRole: UserRole.INSPECTOR },
+    { id: 'NTF-002', title: 'Low Wallet Balance', message: 'Your wallet balance is below ₦5,000. Please fund your wallet to continue collections.', type: 'WARNING', isRead: false, timestamp: new Date().toISOString(), recipientRole: UserRole.AGENT },
+    { id: 'NTF-003', title: 'Pending Revenue Approvals', message: 'There are 3 revenue entries pending your final audit verification.', type: 'INFO', isRead: false, timestamp: new Date().toISOString(), recipientRole: UserRole.REVIEWER },
+    { id: 'NTF-004', title: 'System Security Alert', message: 'A new administrative login was detected from a new IP address.', type: 'WARNING', isRead: false, timestamp: new Date().toISOString(), recipientRole: UserRole.SUPERADMIN }
+  ];
+
+  for (const ntf of notifications) {
+    await postgres.insert('notifications', ntf);
+  }
+
+  console.info('[Auth] Production data and notifications seeded into PostgreSQL simulation successfully.');
 };
 
 export const login = async (email: string): Promise<UserSession | null> => {
