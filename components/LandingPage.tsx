@@ -183,38 +183,72 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
         </div>
       </section>
 
-      {/* Login Modal */}
+      {/* Full-Page Login Portal */}
       {showLogin && (
-        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-[200] flex items-center justify-center p-4 md:p-6 transition-all duration-700">
-          <div className="bg-white rounded-[30px] md:rounded-[50px] p-6 md:p-12 max-w-2xl w-full shadow-2xl border border-slate-200 animate-scale max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start md:items-center mb-8 md:mb-12">
+        <div className="fixed inset-0 bg-white z-[200] flex flex-col transition-all duration-700 overflow-y-auto animate-in fade-in duration-500">
+          {/* Portal Header */}
+          <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-10 md:pt-20 pb-8 flex justify-between items-center">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="w-10 h-10 md:w-14 md:h-14 bg-emerald-600 rounded-xl md:rounded-2xl flex items-center justify-center font-black text-white text-xl md:text-3xl shadow-lg shadow-emerald-500/20">F</div>
               <div>
-                <h2 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tighter">Portal Gateway</h2>
-                <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mt-1 md:mt-2">Production Auth Node</p>
+                <h2 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tighter">Portal Gateway</h2>
+                <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] md:text-sm mt-1">Select your administrative role to continue</p>
               </div>
-              <button onClick={() => setShowLogin(false)} className="p-2 md:p-4 bg-slate-100 hover:bg-emerald-500 hover:text-white rounded-xl md:rounded-3xl text-slate-600 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
             </div>
+            <button 
+              onClick={() => setShowLogin(false)} 
+              className="p-3 md:p-5 bg-slate-100 hover:bg-rose-500 hover:text-white rounded-2xl md:rounded-3xl text-slate-600 transition-all flex items-center gap-2 group"
+            >
+              <span className="hidden sm:inline font-black uppercase text-xs tracking-widest">Close Gateway</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pb-20">
             {isLoggingIn ? (
-              <div className="text-center py-20 space-y-4">
-                <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                <p className="font-bold text-slate-900 animate-pulse">Establishing Session...</p>
+              <div className="flex flex-col items-center justify-center py-40 space-y-8">
+                <div className="w-20 h-20 border-8 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="text-center space-y-2">
+                  <p className="text-2xl font-black text-slate-900 uppercase tracking-[0.2em] animate-pulse">Establishing Session</p>
+                  <p className="text-slate-500 font-medium">Connecting to production PostgreSQL node...</p>
+                </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mt-10">
                 {roles.map((role) => (
-                  <button key={role.id} onClick={() => handleRoleLogin(role.id)} className="p-6 md:p-10 rounded-[24px] md:rounded-[40px] border-2 border-slate-50 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/30 group transition-all text-left relative overflow-hidden">
-                    <span className="text-3xl md:text-5xl mb-4 md:mb-8 block group-hover:scale-125 transition-transform duration-700">{role.icon}</span>
-                    <h4 className="font-black text-slate-900 text-lg md:text-2xl tracking-tight group-hover:text-emerald-700">{role.title}</h4>
-                    <p className="text-slate-500 text-xs md:text-sm mt-2 md:mt-3 leading-snug font-medium">{role.desc}</p>
-                    <div className="absolute top-0 right-0 p-4 md:p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-8 h-8 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
+                  <button 
+                    key={role.id} 
+                    onClick={() => handleRoleLogin(role.id)} 
+                    className="p-8 md:p-12 rounded-[40px] md:rounded-[60px] border-[8px] border-slate-50 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/20 group transition-all text-left relative overflow-hidden shadow-sm hover:shadow-2xl"
+                  >
+                    <span className="text-4xl md:text-7xl mb-8 md:mb-12 block group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500">{role.icon}</span>
+                    <h4 className="font-black text-slate-900 text-2xl md:text-3xl tracking-tight group-hover:text-emerald-700">{role.title}</h4>
+                    <p className="text-slate-500 text-sm md:text-base mt-4 leading-relaxed font-medium">{role.desc}</p>
+                    <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
                     </div>
                   </button>
                 ))}
               </div>
             )}
+            
+            {/* Project Compliance Footer in Gateway */}
+            <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+              <div className="flex items-center gap-6">
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Coat_of_arms_of_Nigeria.svg" className="h-16 md:h-20" alt="Nigeria Arms" />
+                 <div className="text-left">
+                   <p className="font-black text-slate-900 text-sm">FMITI FEDERAL REPUBLIC OF NIGERIA</p>
+                   <p className="text-xs font-bold text-slate-500">Ministry of Industry, Trade and Investment</p>
+                 </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center font-black text-emerald-700">5S</div>
+                <div className="text-left">
+                  <p className="font-black text-slate-900 text-sm">FIVE STARS ICT LTD</p>
+                  <p className="text-xs font-bold text-slate-500">Official Infrastructure Partner</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
