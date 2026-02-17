@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { MOCK_TRANSACTIONS, COLORS } from '../constants';
 import { summarizeRevenueData } from '../services/geminiService';
+import CountUp from './CountUp';
 
 const data = [
   { name: 'Jan', revenue: 4000, inspections: 240 },
@@ -33,10 +34,10 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const stats = [
-    { label: 'Total Revenue', value: '₦1.2B', change: '+12.5%', color: 'text-emerald-600' },
-    { label: 'Verified Certificates', value: '3,842', change: '+8.1%', color: 'text-blue-600' },
-    { label: 'Pending Inspections', value: '142', change: '-5.2%', color: 'text-amber-600' },
-    { label: 'Market Compliance', value: '98.4%', change: '+2.1%', color: 'text-indigo-600' },
+    { label: 'Total Revenue', value: 1.2, prefix: '₦', suffix: 'B', change: '+12.5%', color: 'text-emerald-600' },
+    { label: 'Verified Certificates', value: 3842, change: '+8.1%', color: 'text-blue-600' },
+    { label: 'Pending Inspections', value: 142, change: '-5.2%', color: 'text-amber-600' },
+    { label: 'Market Compliance', value: 98.4, suffix: '%', decimals: 1, change: '+2.1%', color: 'text-indigo-600' },
   ];
 
   return (
@@ -44,7 +45,7 @@ const Dashboard: React.FC = () => {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-emerald-600 to-emerald-800 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl shadow-emerald-200/50">
         <div className="relative z-10 max-w-2xl">
-          <h2 className="text-3xl font-black mb-2">Operational Overview</h2>
+          <h2 className="text-3xl font-black mb-2 text-white">Operational Overview</h2>
           <p className="text-emerald-100 leading-relaxed font-medium">
             Welcome to the Federal Produce Inspection Service central portal. Current peak season for <span className="underline decoration-amber-400 font-bold">Cocoa and Cashew</span> is active in Western and Northern zones. Ensure all digital receipts are synced before terminal close.
           </p>
@@ -60,7 +61,14 @@ const Dashboard: React.FC = () => {
           <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
             <div className="flex items-baseline gap-2 mt-2">
-              <h3 className="text-2xl font-black text-slate-900 tracking-tighter">{stat.value}</h3>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tighter">
+                <CountUp 
+                  end={stat.value} 
+                  prefix={stat.prefix} 
+                  suffix={stat.suffix} 
+                  decimals={stat.decimals}
+                />
+              </h3>
               <span className={`text-xs font-black px-2 py-0.5 rounded-full ${stat.change.startsWith('+') ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                 {stat.change}
               </span>
