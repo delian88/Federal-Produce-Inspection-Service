@@ -8,10 +8,11 @@ interface LayoutProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   userRole: UserRole;
+  userName?: string;
   onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, userRole, onLogout }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, userRole, userName, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -77,49 +78,42 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
-      {/* Sidebar Desktop */}
       <aside className={`hidden md:flex bg-slate-950 text-white transition-all duration-500 ease-in-out ${isSidebarOpen ? 'w-72' : 'w-24'} flex-col z-50 relative border-r border-slate-900`}>
         <SidebarContent />
       </aside>
 
-      {/* Sidebar Mobile Toggle */}
       <div className={`md:hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)}>
         <aside className={`absolute left-0 top-0 bottom-0 bg-slate-950 text-white w-72 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`} onClick={(e) => e.stopPropagation()}>
           <SidebarContent />
         </aside>
       </div>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden relative bg-white">
         <header className="h-16 md:h-24 bg-white/80 backdrop-blur-md flex items-center justify-between px-4 md:px-10 shrink-0 z-40 border-b border-slate-100">
           <div className="flex items-center gap-4 md:gap-8">
             <button onClick={() => {
-              if (window.innerWidth < 768) {
-                setIsMobileMenuOpen(true);
-              } else {
-                setIsSidebarOpen(!isSidebarOpen);
-              }
-            }} className="p-2 md:p-3 hover:bg-slate-100 rounded-xl transition-all active:scale-90 text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" md-width="24" md-height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              if (window.innerWidth < 768) setIsMobileMenuOpen(true);
+              else setIsSidebarOpen(!isSidebarOpen);
+            }} className="p-2 md:p-3 hover:bg-slate-100 rounded-xl transition-all text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
             <div className="animate-reveal-right">
               <h1 className="text-lg md:text-2xl font-black text-slate-900 tracking-tighter truncate max-w-[150px] md:max-w-none">
                 {menuItems.find(m => m.id === activeTab)?.name || 'Dashboard'}
               </h1>
-              <p className="text-[8px] md:text-[10px] text-emerald-600 font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mt-0.5">{userRole}</p>
+              <p className="text-[8px] md:text-[10px] text-emerald-600 font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mt-0.5">{userRole} Session</p>
             </div>
           </div>
           <div className="flex items-center gap-4 md:gap-8">
              <div className="hidden lg:block text-right">
-               <p className="text-sm font-black text-slate-900 tracking-tight">M. Qaim Aliyu Sambo</p>
-               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Global Operations</p>
+               <p className="text-sm font-black text-slate-900 tracking-tight">{userName || 'Loading...'}</p>
+               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">FPIS Official</p>
              </div>
              <div className="w-10 h-10 md:w-14 md:h-14 bg-slate-100 rounded-xl md:rounded-3xl border border-emerald-500/20 overflow-hidden shadow-sm hover:scale-105 transition-transform cursor-pointer group">
-               <img className="group-hover:scale-110 transition-transform duration-500 w-full h-full object-cover" src={`https://picsum.photos/seed/${userRole}/120/120`} alt="Profile" />
+               <img className="group-hover:scale-110 transition-transform duration-500 w-full h-full object-cover" src={`https://picsum.photos/seed/${userName || userRole}/120/120`} alt="Profile" />
              </div>
           </div>
         </header>
-
         <div key={activeTab} className="flex-1 overflow-y-auto p-4 md:p-10 lg:p-14 scroll-smooth animate-reveal stagger-1">
           {children}
         </div>
