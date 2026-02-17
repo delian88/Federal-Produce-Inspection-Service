@@ -4,9 +4,10 @@ import { UserRole } from '../types';
 
 interface LandingPageProps {
   onEnter: (role: UserRole) => void;
+  onShowAbout: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onEnter, onShowAbout }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
@@ -126,12 +127,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
             >
               Get Started Now
             </button>
-            <a 
-              href="#about"
+            <button 
+              onClick={onShowAbout}
               className="px-12 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-2xl font-bold text-xl hover:bg-white/20 transition-all"
             >
               About the Project
-            </a>
+            </button>
           </div>
         </div>
 
@@ -172,7 +173,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 and ensure Nigerian agricultural wealth reaches its full global potential.
               </p>
             </div>
-            <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center gap-3">
+            <button 
+              onClick={onShowAbout}
+              className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all flex items-center gap-3">
               Partnership Details
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
             </button>

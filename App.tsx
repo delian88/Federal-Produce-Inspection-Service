@@ -6,10 +6,11 @@ import RevenuePortal from './components/RevenuePortal';
 import InspectionPortal from './components/InspectionPortal';
 import AgentPortal from './components/AgentPortal';
 import LandingPage from './components/LandingPage';
+import AboutPage from './components/AboutPage';
 import { UserRole } from './types';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'landing' | 'portal'>('landing');
+  const [view, setView] = useState<'landing' | 'portal' | 'about'>('landing');
   const [userRole, setUserRole] = useState<UserRole>(UserRole.SUPERADMIN);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -50,8 +51,12 @@ const App: React.FC = () => {
     }
   };
 
+  if (view === 'about') {
+    return <AboutPage onBack={() => setView('landing')} onAccess={() => setView('landing')} />;
+  }
+
   if (view === 'landing') {
-    return <LandingPage onEnter={handleEnterPortal} />;
+    return <LandingPage onEnter={handleEnterPortal} onShowAbout={() => setView('about')} />;
   }
 
   return (
