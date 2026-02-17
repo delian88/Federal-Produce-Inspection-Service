@@ -76,7 +76,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess, onShowAbout })
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-6">
-            <button onClick={onShowAbout} className={`hidden sm:block font-bold text-xs md:text-sm uppercase tracking-widest transition-colors duration-500 ${scrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-200 hover:text-white'}`}>Project Note</button>
+            <button onClick={onShowAbout} className={`hidden sm:block font-bold text-xs md:text-sm uppercase tracking-widest transition-colors duration-500 ${scrolled ? 'text-slate-600 hover:text-emerald-600' : 'text-slate-200 hover:text-white'}`}>About</button>
             <button onClick={() => setShowLogin(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl font-black text-[10px] md:text-sm uppercase tracking-widest transition-all">Sign In</button>
           </div>
         </div>

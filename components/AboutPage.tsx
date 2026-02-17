@@ -14,7 +14,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onBack, onAccess }) => {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 py-3 md:py-4 px-4 md:px-12 flex justify-between items-center">
         <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={onBack}>
           <div className="w-6 h-6 md:w-8 md:h-8 bg-emerald-600 rounded flex items-center justify-center font-bold text-white text-sm md:text-base">F</div>
-          <span className="font-bold text-slate-800 text-sm md:text-base">FPIS Project Information</span>
+          <span className="font-bold text-slate-800 text-sm md:text-base">About FPIS</span>
         </div>
         <button 
           onClick={onBack}
