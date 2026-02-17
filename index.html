@@ -38,12 +38,24 @@
           0%, 100% { text-shadow: 0 0 10px rgba(16, 185, 129, 0); }
           50% { text-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
         }
+        @keyframes bell-ring {
+          0%, 100% { transform: rotate(0); }
+          10%, 30%, 50%, 70%, 90% { transform: rotate(5deg); }
+          20%, 40%, 60%, 80% { transform: rotate(-5deg); }
+        }
+        @keyframes pop-dot {
+          0% { transform: scale(0); opacity: 0; }
+          70% { transform: scale(1.2); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
 
         /* Utility Classes */
         .animate-reveal { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-reveal-right { animation: fade-in-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-scale { animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-bell { animation: bell-ring 2s ease-in-out infinite; transform-origin: top center; }
+        .animate-pop { animation: pop-dot 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
         .stagger-1 { animation-delay: 0.1s; }
         .stagger-2 { animation-delay: 0.2s; }

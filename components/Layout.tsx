@@ -26,7 +26,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
       setNotifications(filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
     };
     fetchNotifications();
-  }, [userRole, isNotifOpen]);
+    
+    // Polling simulation for "new" arrival animation feel
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+  }, [userRole]);
 
   const markAllAsRead = async () => {
     for (const ntf of notifications) {
@@ -133,11 +137,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
              <div className="relative">
                <button 
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-400 relative"
+                className={`p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-400 relative ${unreadCount > 0 ? 'animate-bell' : ''}`}
                >
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
                  {unreadCount > 0 && (
-                   <span className="absolute top-2.5 right-2.5 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>
+                   <span className="absolute top-2.5 right-2.5 w-3.5 h-3.5 bg-rose-500 border-2 border-white rounded-full animate-pop"></span>
                  )}
                </button>
 
@@ -154,18 +158,32 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user
                       {notifications.length === 0 ? (
                         <div className="p-10 text-center text-slate-400 font-medium text-sm">No notifications found</div>
                       ) : (
-                        notifications.map((n) => (
-                          <div key={n.id} className={`p-6 transition-colors ${n.isRead ? 'opacity-60' : 'bg-emerald-50/20'}`}>
+                        notifications.map((n, idx) => (
+                          <div 
+                            key={n.id} 
+                            className={`p-6 transition-all duration-500 ${n.isRead ? 'bg-white opacity-60' : 'bg-emerald-50/20'} animate-reveal-right stagger-${(idx % 4) + 1}`}
+                          >
                             <div className="flex items-start gap-4">
-                              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                              <div className={`w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 ${
                                 n.type === 'WARNING' ? 'bg-amber-500' :
                                 n.type === 'ERROR' ? 'bg-rose-500' :
                                 n.type === 'SUCCESS' ? 'bg-emerald-500' : 'bg-blue-500'
-                              }`}></div>
+                              } ${!n.isRead ? 'animate-pulse' : ''}`}></div>
                               <div className="flex-1">
-                                <p className="font-bold text-slate-900 text-sm">{n.title}</p>
-                                <p className="text-slate-500 text-xs mt-1 leading-relaxed">{n.message}</p>
-                                <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase">{new Date(n.timestamp).toLocaleTimeString()}</p>
+                                <p className={`text-sm tracking-tight ${n.isRead ? 'font-medium text-slate-600' : 'font-black text-slate-900'}`}>
+                                  {n.title}
+                                </p>
+                                <p className={`text-xs mt-1 leading-relaxed ${n.isRead ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>
+                                  {n.message}
+                                </p>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
+                                    {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </p>
+                                  {!n.isRead && (
+                                    <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded uppercase">New</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
