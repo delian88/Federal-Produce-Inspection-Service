@@ -1,0 +1,7 @@
+{
+  "name": "FPIS Revenue Automation Portal",
+  "description": "An integrated revenue management and inspection portal for the Federal Produce Inspection Service (FPIS), developed in partnership with Five Stars ICT Ltd to automate agricultural export certifications and revenue collection.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
